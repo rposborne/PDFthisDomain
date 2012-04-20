@@ -1,0 +1,1 @@
+A Super Simple Sintra/ resque worker Webapp that will transform URLs into PDF's 

@@ -43,7 +43,7 @@ post '/process' do
   confirm = params["confirm"]
   @processed_urls = params["urls"].map {|i, l| l} 
   if email 
-    #@job = Resque.enqueue(Pdfs, {:email => email, :url => url, :urls_to_process => @processed_urls})
+    @job = Resque.enqueue(Pdfs, {:email => email, :url => url, :urls_to_process => @processed_urls})
   end
 
   haml :index, :format => :html5
@@ -57,7 +57,7 @@ All PDF rendering and file generation happens in Memory. (Money Saving)
 
 =end
 class Pdfs
-  @queue = :Pdfs
+  @queue = :low
   def self.perform(job)
     email          = job["email"]
     url            = job["url"]

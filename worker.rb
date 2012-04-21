@@ -41,8 +41,8 @@ class Pdfs
 
     storage = Fog::Storage.new(
       :provider                 => 'AWS',
-      :aws_secret_access_key    => ENV["S3_KEY"],
-      :aws_access_key_id        => ENV["S3_SECRET"]  
+      :aws_secret_access_key    => ENV["S3_SECRET"],
+      :aws_access_key_id        => ENV["S3_KEY"]  
     )
     directory = storage.directories.get("pdfthisurl")
     object = directory.files.create(

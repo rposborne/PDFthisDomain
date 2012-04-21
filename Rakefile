@@ -1,4 +1,4 @@
-require './app'
+require './worker'
 require 'resque/tasks'
 
 task "resque:setup" do

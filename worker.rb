@@ -44,7 +44,7 @@ class Pdfs
       :aws_secret_access_key    => ENV["S3_SECRET"],
       :aws_access_key_id        => ENV["S3_KEY"]  
     )
-    directory = storage.directories.get("pdfthisurl")
+    directory = storage.directories.get("pdfthisdomain")
     object = directory.files.create(
     :key    => name,
     :body   => t.read,

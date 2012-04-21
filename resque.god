@@ -1,5 +1,9 @@
-rails_env   = ENV['RAILS_ENV']  || "production"
-rails_root  = ENV['RAILS_ROOT'] || "/app"
+rails_env     = ENV['RAILS_ENV']  || "production"
+rails_root    = ENV['RAILS_ROOT'] || "/app"
+s3_secret     = ENV['S3_SECRET']
+s3_key        = ENV['S3_KEY']
+redistogo_url = ENV['REDISTOGO_URL']
+
 num_workers = rails_env == 'production' ? 3 : 2
 
 num_workers.times do |num|

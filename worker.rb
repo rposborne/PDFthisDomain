@@ -69,7 +69,7 @@ def render_url_to_pdf(url, options={})
   t = Tempfile.new("#{Time.now}")
   puts "Rendering Link #{url}  to #{t.path}"
   wk = File.join(ENV['APP_ROOT'], "bin", "wkhtmltopdf-amd64")
-  command = "\"#{wk}\" #{url} #{Shellwords.escape(t.path)} #{parse_options(options)} -q "
+  command = "\"#{wk}\" -q #{url} #{Shellwords.escape(t.path)} #{parse_options(options)}"
   system("#{command}")
   
   return t

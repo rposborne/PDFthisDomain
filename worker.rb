@@ -1,14 +1,22 @@
 require 'resque'
+require 'uri'
 require 'zip/zip'
 require 'pony'
 require 'fog'
 require 'shellwords'
+
+ENV['APP_ROOT'] ||= File.dirname(__FILE__)
+
 =begin
 Worker Code
 
 All PDF rendering and file generation happens in Memory. (Money Saving)
 
 =end
+
+uri = URI.parse(ENV["REDISTOGO_URL"])
+Resque.redis = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
+
 class Pdfs
   @queue = :low
   def self.perform(job)

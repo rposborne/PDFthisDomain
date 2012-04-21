@@ -4,7 +4,6 @@ require 'uri'
 require 'anemone'
 require 'resque'
 
-ENV['APP_ROOT'] ||= File.dirname(__FILE__)
 
 configure :production do
   require 'newrelic_rpm'

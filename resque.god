@@ -1,5 +1,5 @@
 rails_env   = ENV['RAILS_ENV']  || "production"
-rails_root  = ENV['RAILS_ROOT'] || "/srv/www/pdfthisdomain.burningpony.com/PDFthisDomain"
+rails_root  = ENV['RAILS_ROOT'] || "/app"
 num_workers = rails_env == 'production' ? 5 : 2
 
 num_workers.times do |num|
@@ -9,15 +9,15 @@ num_workers.times do |num|
     w.group    = 'resque'
     w.interval = 30.seconds
     w.env      = {"QUEUE"=>"critical,high,low", "RAILS_ENV"=>rails_env}
-    w.start    = "/usr/bin/rake -f #{rails_root}/Rakefile resque:work"
+    w.start    = "bundle exec rake -f #{rails_root}/Rakefile environment resque:work"
 
-    w.uid = 'www-data'
-    w.gid = 'www-data'
+    w.uid = 'root'
+    w.gid = 'root'
 
     # restart if memory gets too high
     w.transition(:up, :restart) do |on|
       on.condition(:memory_usage) do |c|
-        c.above = 350.megabytes
+        c.above = 100.megabytes
         c.times = 2
       end
     end

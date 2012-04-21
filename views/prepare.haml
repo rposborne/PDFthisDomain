@@ -3,14 +3,7 @@
   %p 
     This will create a set of PDFs for a given url.   It will follow the top 10 links in your domain. 
   %br
-  -if @job 
-    .alert.alert-success
-      %strong YAY!
-      Your job has been scheduled, We will email you at 
-      %em #{params["email"]}
-      to let you know when it's done. 
-      %i.pull-right.icon-ok
-  -elsif params["url"]   
+  -if params["url"]   
     %h2
       URLs to Render
       %small 
@@ -22,8 +15,8 @@
     .well
       %form{:method => :post, :action => "/process"}
         -@processed_urls.each_with_index do |link , i|
-          .alert{:class => "#{"alert-success" if i <= 9 }#{"alert-danger" if i > 9; }"}
-            %input.urls{:type => :checkbox, :name => "urls[#{i}]" , :value => "#{link}" , "#{'checked' if i <= 9}" => ""}
+          .alert{:class => "#{"alert-success" if i <= @limit }#{"alert-danger" if i > @limit; }"}
+            %input.urls{:type => :checkbox, :name => "urls[#{i}]" , :value => "#{link}" , "#{'checked' if i <= @limit}" => ""}
             #{link}          
         %input.large{:type => :hidden, :name => :url , :value => "#{params["url"]}"}
         %input.large{:type => :hidden, :name => :confirm , :value => 1}
@@ -33,12 +26,6 @@
             .controls
               %input.super{:type => :email, :name => :email , :placeholder => "So we can send you your PDF's!"}
               %input.btn.btn-danger.btn-large{:type => :submit, :value => "Do It!"}
-  -else
-    %form.form-inline{:method => :post, :remote => true}
-      .control-group
-        .controls
-          %input.super{:name => :url , :value => "#{"http://" unless params['url']}#{params["url"] if params["url"]  }", :placeholder => "URL"}
-          %input.btn.btn-primary.btn-large{:type => :submit, :value => "PDF it"} 
   .status.span12
     %br
     #status.hide

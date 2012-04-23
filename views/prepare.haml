@@ -9,41 +9,52 @@
       %small 
         Remaining: 
         %span#remaining 0
-      .pull-right 
-        %a.btn{:href => "/"} New URL
+      .pull-right
+        %h3
+          Cost:
+          %span#cost Free!
+          %a.btn{:href => "/"} New URL
+          %a#select-all.btn{:href => "#", "data-toggle"=>"button"} Select All
+          %a#purchase.hide_free.btn-success.btn{:href => "#"}
+            %i.icon-shopping-cart.icon-white
+            Buy
     %br
-    .well
-      %form{:method => :post, :action => "/process"}
+    %form{:id => "prepare-form", :action => "https://www.sandbox.paypal.com/cgi-bin/webscr", :method => "post"}
+      .hide.well 
+        %h5 Options
+        .form-inline
+          %label Margins
+          %input.span1{:placeholder => "Left", :name => :left_margin}
+          %input.span1{:placeholder => "Right", :name => :right_margin}
+          %input.span1{:placeholder => "Top", :name => :top_margin}
+          %input.span1{:placeholder => "Bottom", :name => :bottom_margin}
+          %label.control-label Show Background
+          %input{:type => :checkbox} 
+      .well
         -@processed_urls.each_with_index do |link , i|
-          .alert{:class => "#{"alert-success" if i <= @limit }#{"alert-danger" if i > @limit; }"}
+          .url.alert{:class => "#{"alert-success" if i <= @limit }#{"alert-danger" if i > @limit; }"}
             %input.urls{:type => :checkbox, :name => "urls[#{i}]" , :value => "#{link}" , "#{'checked' if i <= @limit}" => ""}
-            #{link}          
-        %input.large{:type => :hidden, :name => :url , :value => "#{params["url"]}"}
-        %input.large{:type => :hidden, :name => :confirm , :value => 1}
-        -if !@job 
-          .control-group
-            %label.control-label Email
-            .controls
-              %input.super{:type => :email, :name => :email , :placeholder => "So we can send you your PDF's!"}
-              %input.btn.btn-danger.btn-large{:type => :submit, :value => "Do It!"}
-  .status.span12
-    %br
-    #status.hide
-.row
-  .span4
-    %h2 Rendered with WebKit
-    %p PDFthisDomain is powered by wkhtmltopdf an amazing open source projects that provides rendering from a url to a PDF.  It is an actively maintained and a highly useful tool that we use across all sorts of applications for PDF rendering. 
-    %p
-      %a.btn{:href => "http://code.google.com/p/wkhtmltopdf/"} Learn about wkhtmltopdf »
-
-  .span4
-    %h2 Free!
-    %p Hosting and Server time for Rendering is donated by Burningpony Corp. Though... If you want to send us a cup of coffee it's always appreciated. 
-    %p
-      %a.btn{:href => "http://burningpony.com"} Learn about Burningpony »
-  .span4
-    %h2 Open Source
-    %p You can find this entire application on github!
-    %p
-      %a.btn{:href => "https://github.com/rposborne/PDFthisDomain"} Use the Source! »
+            #{link} 
+            .pull-right
+              %a{:href => link, :target => :blank, :style => "opacity:.5"}
+                %i.icon-share-alt
+        .control-group
+          %label.control-label.hide.hide_cost Email
+          .controls       
+            %input{:name => "business", :type => "hidden", :value => "russel_1335151944_biz@iapptrust.com"}
+            %input{:name => "no_note", :type => "hidden", :value => "1"}
+            %input{:name => "no_shipping", :type => "hidden", :value => "1"}
+            %input{:name => "notify_url", :type => "hidden", :value => "http://requestb.in/1hff8bp1"}
+            %input{:name => "rm", :type => "hidden", :value => "2"}
+            %input{:name => "return", :type => "hidden", :value => "http://#{request.host_with_port}/process"}
+            %input{:name => "cmd", :type => "hidden", :value => "_xclick"}
+            %input{:name => "item_name", :type => "hidden", :value => "URL Rendering Service"}
+            %input#purchase_amount{:name => "quantity", :type => "hidden", :value => "3"}
+            %input{:name => "amount", :type => "hidden", :value => ".10"}
+            %input{:name => "currency_code", :type => "hidden", :value => "USD"}
+            %input.hide_cost.hide.super{:type => :email, :name => :email , :placeholder => "So we can send you your PDF's!"}
+            %input.hide_cost.hide.btn.btn-danger.btn-large{:type => :submit, :value => "Do It!"}
+            %input.catch.hide_free.hide.pay-btn.btn.btn-success.btn-large{ :type => :submit, :value => "Buy!"}
+      
+!= haml :footer
 

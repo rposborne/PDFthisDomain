@@ -3,60 +3,14 @@
   %p 
     This will create a set of PDFs for a given url.   It will follow the top 10 links in your domain. 
   %br
-  -if @job 
-    .alert.alert-success
-      %strong YAY!
-      Your job has been scheduled, We will email you at 
-      %em #{params["email"]}
-      to let you know when it's done. 
-      %i.pull-right.icon-ok
-  -elsif params["url"]   
-    %h2
-      URLs to Render
-      %small 
-        Remaining: 
-        %span#remaining 0
-      .pull-right 
-        %a.btn{:href => "/"} New URL
-    %br
-    .well
-      %form{:method => :post, :action => "/process"}
-        -@processed_urls.each_with_index do |link , i|
-          .alert{:class => "#{"alert-success" if i <= 9 }#{"alert-danger" if i > 9; }"}
-            %input.urls{:type => :checkbox, :name => "urls[#{i}]" , :value => "#{link}" , "#{'checked' if i <= 9}" => ""}
-            #{link}          
-        %input.large{:type => :hidden, :name => :url , :value => "#{params["url"]}"}
-        %input.large{:type => :hidden, :name => :confirm , :value => 1}
-        -if !@job 
-          .control-group
-            %label.control-label Email
-            .controls
-              %input.super{:type => :email, :name => :email , :placeholder => "So we can send you your PDF's!"}
-              %input.btn.btn-danger.btn-large{:type => :submit, :value => "Do It!"}
-  -else
-    %form.form-inline{:method => :post, :remote => true}
-      .control-group
-        .controls
-          %input.super{:name => :url , :value => "#{"http://" unless params['url']}#{params["url"] if params["url"]  }", :placeholder => "URL"}
-          %input.btn.btn-primary.btn-large{:type => :submit, :value => "PDF it"} 
+  %form#url-lookup.form-inline{:method => :post, :action => "/prepare"}
+    .control-group
+      .controls
+        %input#url-lookup.super{:name => :url , :value => "#{"http://" unless params['url']}#{params["url"] if params["url"]  }", :placeholder => "URL"}
+        %input.btn.btn-primary.btn-large{:type => :submit, :value => "PDF it"} 
   .status.span12
     %br
     #status.hide
-.row
-  .span4
-    %h2 Rendered with WebKit
-    %p PDFthisDomain is powered by wkhtmltopdf an amazing open source projects that provides rendering from a url to a PDF.  It is an actively maintained and a highly useful tool that we use across all sorts of applications for PDF rendering. 
-    %p
-      %a.btn{:href => "http://code.google.com/p/wkhtmltopdf/"} Learn about wkhtmltopdf »
+!= haml :footer
 
-  .span4
-    %h2 Free!
-    %p Hosting and Server time for Rendering is donated by Burningpony Corp. Though... If you want to send us a cup of coffee it's always appreciated. 
-    %p
-      %a.btn{:href => "http://burningpony.com"} Learn about Burningpony »
-  .span4
-    %h2 Open Source
-    %p You can find this entire application on github!
-    %p
-      %a.btn{:href => "https://github.com/rposborne/PDFthisDomain"} Use the Source! »
 

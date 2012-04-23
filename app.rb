@@ -7,17 +7,15 @@ require 'resque'
 require 'timeout'
 require 'json'
 require 'data_mapper'
-
 require './worker'
 require './models/order'
-configure :development do
-  require 'newrelic_rpm'
-  require 'dm-sqlite-adapter'
-end
+require 'dm-sqlite-adapter' if development?
+
 configure :production do
   require 'newrelic_rpm'
   require 'dm-postgres-adapter'
 end
+
 DataMapper.setup(:default, ENV['DATABASE_URL'] || 'sqlite3::memory:')
 DataMapper.auto_upgrade!
 enable :sessions

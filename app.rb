@@ -7,15 +7,21 @@ require 'resque'
 require 'timeout'
 require 'json'
 require 'data_mapper'
-require 'dm-sqlite-adapter'
+
 require './worker'
 require './models/order'
+configure :development do
+  require 'newrelic_rpm'
+  require 'dm-sqlite-adapter'
+end
+configure :production do
+  require 'newrelic_rpm'
+  require 'dm-postgres-adapter'
+end
 DataMapper.setup(:default, ENV['DATABASE_URL'] || 'sqlite3::memory:')
 DataMapper.auto_upgrade!
 enable :sessions
-configure :production do
-  require 'newrelic_rpm'
-end
+
 
 #Prep Resque with the REDIS connection string
 uri = URI.parse(ENV["REDISTOGO_URL"])

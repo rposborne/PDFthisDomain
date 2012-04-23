@@ -6,7 +6,8 @@ require 'fog'
 require 'shellwords'
 require 'active_support/core_ext/class/attribute_accessors'
 require 'active_support/core_ext/object/blank'
-
+require 'net/http'
+require 'bitly'
 
 ENV['APP_ROOT'] ||= File.dirname(__FILE__)
 
@@ -56,12 +57,22 @@ class Pdfs
     )
     puts "Upload to S3 #{object.public_url} with attachment size of #{t.size}"
     puts "sending mail with attachment size of #{object.public_url}"
-    Pony.mail :to => email,
-    :from => 'pdfthisdomain@burningpony.com',
-    :subject => 'The PDFs you requested!', 
-    :headers => { 'Content-Type' => 'text/html' },
-    :body => "<h1>Howdy!</h1> <br /> Your PDF can be found <a href =\"#{object.public_url}\"> Here</a>.<br \> <strong>They will only be avaliable for the next 24 hours.</strong><br \> <br \> Thanks, <br \> Russell"
-
+    Pony.mail({ :to => email,
+      :from => 'pdfthisdomain@burningpony.com',
+      :subject => 'The PDFs you requested!', 
+      :headers => { 'Content-Type' => 'text/html' },
+      :body => "<h1>Howdy!</h1> <br /> Your PDF can be found <a href =\"#{object.public_url}\"> Here</a>.<br \> <strong>They will only be avaliable for the next 24 hours.</strong><br \> <br \> Thanks, <br \> Russell"
+      :via => :smtp,
+      :via_options => {
+        :address              => 'smtp.gmail.com',
+        :port                 => '587',
+        :enable_starttls_auto => true,
+        :user_name            => ENV["GMAIL_USER"],
+        :password             => ENV["GMAIL_PASSWORD"],
+        :authentication       => :plain, 
+        :domain               => "pdfthisdomain.com"
+      }
+    })
   end
 end
 

@@ -5,6 +5,8 @@ class Order
   property :tx_id, Text
   property :status,       String
   property :urls,       Text
+  property :long_url, Text
+  property :short_url , String
   property :options,       Text
   property :ip, String
   property :email, String

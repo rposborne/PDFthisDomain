@@ -24,14 +24,16 @@ Resque.redis = Redis.new(:host => uri.host, :port => uri.port, :password => uri.
 class Pdfs
   @queue = :low
   def self.perform(job)
+    id             = job["id"]
     email          = job["email"]
     url            = job["url"]
     processed_urls = job["urls_to_process"]
     options        = job["options"]
     name           = "#{email}_#{Time.now}.zip"
+
     t = Tempfile.new(name)
     temp_files = []
-    processed_urls.uniq.take(10).each_with_index do |link, i|
+    processed_urls.uniq.each_with_index do |link, i|
       puts "Rendering Link #{link}"
       temp_files << {:file => render_url_to_pdf(link,options) ,:name => URI(link.dup).path.gsub!('/','_').to_s }
     end
@@ -57,6 +59,7 @@ class Pdfs
     )
     puts "Upload to S3 #{object.public_url} with attachment size of #{t.size}"
     puts "sending mail with attachment size of #{object.public_url}"
+    
     Pony.mail({ :to => email,
       :from => 'pdfthisdomain@burningpony.com',
       :subject => 'The PDFs you requested!', 
@@ -73,7 +76,14 @@ class Pdfs
         :domain               => "pdfthisdomain.com"
       }
     })
+    
+    report_to_app_server({:id => id, :long_url => object.public_url , :short_url => "" , :status => "Complete"})
   end
+end
+
+def report_to_app_server(data)
+  postData = Net::HTTP.post_form(URI.parse('http://pdfthisdomain.com/worker_endpoint'), data )  
+  return postData
 end
 
 def render_url_to_pdf(url, options={})

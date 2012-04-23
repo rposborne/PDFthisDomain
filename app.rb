@@ -9,11 +9,9 @@ require 'json'
 require 'data_mapper'
 require './worker'
 require './models/order'
-require 'dm-sqlite-adapter' if development?
 
 configure :production do
   require 'newrelic_rpm'
-  require 'dm-postgres-adapter'
 end
 
 DataMapper.setup(:default, ENV['DATABASE_URL'] || 'sqlite3::memory:')
@@ -46,10 +44,10 @@ post '/process' do
     @order.email = params["email"]
     @order.status = "Sent to Queue"
     @order.save
-    @job = Resque.enqueue(Pdfs, {:email => @order.email, :url => @order.urls.first, :urls_to_process => @order.urls, :options =>  params["options"] })   
+    @job = Resque.enqueue(Pdfs, {:id => @order.id, :email => @order.email, :url => @order.urls.first, :urls_to_process => @order.urls, :options =>  params["options"] })   
   else
     @order = Order.create(:email => params["email"], :urls => params["urls"].map {|i, l| l},:status => "Sent to Queue (Free)", :raw => params ,:created_at => Time.now,:updated_at => Time.now)
-    @job = Resque.enqueue(Pdfs, {:email => @order.email, :url => @order.urls.first, :urls_to_process => @order.urls, :options =>  params["options"] })   
+    @job = Resque.enqueue(Pdfs, {:id => @order.id, :email => @order.email, :url => @order.urls.first, :urls_to_process => @order.urls, :options =>  params["options"] })   
   end 
   haml :success, :format => :html5, :layout => :application
 end
@@ -66,9 +64,13 @@ post '/store' do
   content_type :json
   @order.to_json
 end
+
 get '/admin/orders' do 
   @order = Order.all
   content_type :json
   @order.to_json
 end
 
+post '/worker_endpoint' do
+
+end

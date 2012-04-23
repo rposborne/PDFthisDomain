@@ -11,7 +11,7 @@ gem 'pony'
 gem 'active_support'
 gem 'bitly'
 gem 'data_mapper'
-
+gem 'metainspector'
 
 group :development do 
   gem 'dm-sqlite-adapter' 

@@ -1,0 +1,18 @@
+#{params.inspect}
+.hero-unit
+  %h1 PDF this Domain
+  %br
+
+  -if @paypal
+    =@order.inspect
+    .alert.alert-info Your Job is ready to be processed. We just need your email so we can send you the finished product.
+    %form{:action => "/process",:method => :post}
+      %input.super{:type => :email, :name => :email , :placeholder => "So we can send you your PDF's!"}
+      %input.btn.btn-danger.btn-large{:type => :submit, :value => "Start!"}
+    
+  -else
+    .alert.alert-success
+      %strong YAY!
+      Your job has been scheduled, We will email you to let you know when it's done. 
+      %i.pull-right.icon-ok
+!= haml :footer

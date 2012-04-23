@@ -102,7 +102,7 @@ function updateView() {
 
   if (remaining < 0 ) {
     $("#cost").html(formatCurrency(cost)); 
-    $("form#prepare-form").attr( "action", "https://www.sandbox.paypal.com/cgi-bin/webscr" );
+    $("form#prepare-form").attr( "action", "https://www.paypal.com/cgi-bin/webscr" );
     $(".hide_free").show();
     $(".hide_cost").hide();
   };

@@ -1,4 +1,7 @@
+require 'rubygems'
 require 'sinatra'
+require 'rpm_contrib'
+require 'newrelic_rpm'
 require 'rack-flash'
 require 'haml'
 require 'uri'
@@ -11,9 +14,6 @@ require 'data_mapper'
 require './worker'
 require './models/order'
 
-configure :production do
-  require 'newrelic_rpm'
-end
 
 DataMapper.setup(:default, ENV['DATABASE_URL'] || 'sqlite3::memory:')
 DataMapper.auto_upgrade!

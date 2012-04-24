@@ -7,7 +7,8 @@ require 'shellwords'
 require 'active_support/core_ext/class/attribute_accessors'
 require 'active_support/core_ext/object/blank'
 require 'net/http'
-require 'bitly'
+require 'tempfile'
+
 
 ENV['APP_ROOT'] ||= File.dirname(__FILE__)
 
@@ -90,7 +91,7 @@ def render_url_to_pdf(url, options={})
   t = Tempfile.new("#{Time.now}")
   puts "Rendering Link #{url}  to #{t.path}"
   wk = File.join(ENV['APP_ROOT'], "bin", "wkhtmltopdf-amd64")
-  command = "\"#{wk}\" -q #{url} #{Shellwords.escape(t.path)} #{parse_options(options)}"
+  command = "\"#{wk}\" #{url} #{Shellwords.escape(t.path)} #{parse_options(options.nil? {} : options)}"
   puts "Command Passed to wkhtmltopdf #{command}"
   system("#{command}")
   

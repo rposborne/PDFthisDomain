@@ -78,12 +78,12 @@ class Pdfs
       }
     })
     
-    report_to_app_server({:id => id, :long_url => object.public_url , :short_url => "" , :status => "Complete"})
+    report_to_app_server({:id => id, :order => { :long_url => object.public_url , :short_url => "" , :status => "Complete"}})
   end
 end
 
 def report_to_app_server(data)
-  postData = Net::HTTP.post_form(URI.parse('http://pdfthisdomain.com/worker_endpoint'), data )  
+  postData = Net::HTTP.post_form(URI.parse('http://www.pdfthisdomain.com/worker_endpoint'), data )  
   return postData
 end
 

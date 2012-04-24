@@ -18,6 +18,7 @@ gem 'metainspector'
 gem 'rack-flash3'
 
 group :development do 
+  gem 'debugger'
   gem 'dm-sqlite-adapter' 
 end
 group :production do 

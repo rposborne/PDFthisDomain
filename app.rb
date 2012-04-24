@@ -14,7 +14,7 @@ require 'data_mapper'
 require './worker'
 require './models/order'
 
-
+#require 'debugger';
 DataMapper.setup(:default, ENV['DATABASE_URL'] || 'sqlite3::memory:')
 DataMapper.auto_upgrade!
 enable :sessions
@@ -48,7 +48,7 @@ post '/process' do
   if session[:current_order]
     @order = Order.get(session[:current_order])
     @order.email = params["email"]
-    @order.status = "Sent to Queue"
+    @order.status = "Sent to Queue (Purchased)"
     @order.save
     @job = Resque.enqueue(Pdfs, {:id => @order.id, :email => @order.email, :url => @order.urls.first, :urls_to_process => @order.urls, :options =>  params["options"] })   
   else
@@ -65,7 +65,7 @@ get '/process' do
 end
 
 post '/store' do
-  @order = Order.create(:urls => params["urls"].map {|i, l| l},:status => "Sent To Processing", :raw => params ,:created_at => Time.now,:updated_at => Time.now)
+  @order = Order.create(:urls => params["urls"].map {|i, l| l},:status => "Sent To Payment", :raw => params ,:created_at => Time.now,:updated_at => Time.now)
   session[:current_order] = @order.id
   content_type :json
   @order.to_json
@@ -79,7 +79,10 @@ end
 
 post '/worker_endpoint' do
   @order = Order.get(params["id"])
-  @order.attributes = params["order"]
-  @order.save 
-  "OK"
+  if @order
+    @order.attributes = params["order"]
+    @order.save 
+  end
+    content_type :json
+  @order.to_json
 end

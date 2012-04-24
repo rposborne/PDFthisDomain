@@ -1,9 +1,9 @@
 .hero-unit
   %h1 PDF this Domain
   %p 
-    This will create a set of PDFs for a given url.   It will follow the top 10 links in your domain. 
+    This will create a set of PDFs for a given url. 
   %br
-  -if params["url"]   
+  -if !@processed_urls.empty?   
     %h2
       URLs to Render
       %small 
@@ -55,6 +55,6 @@
             %input.hide_cost.hide.super{:type => :email, :name => :email , :placeholder => "So we can send you your PDF's!"}
             %input.hide_cost.hide.btn.btn-danger.btn-large{:type => :submit, :value => "Do It!"}
             %input.catch.hide_free.hide.pay-btn.btn.btn-success.btn-large{ :type => :submit, :value => "Buy!"}
-      
+
 != haml :footer
 

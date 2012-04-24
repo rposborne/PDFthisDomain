@@ -112,6 +112,9 @@ GEM
     pony (1.4)
       mail (> 2.0)
     rack (1.4.1)
+    rack-flash3 (1.0.1)
+      rack
+      rack
     rack-protection (1.2.0)
       rack
     rake (0.8.7)
@@ -157,6 +160,7 @@ DEPENDENCIES
   metainspector
   newrelic_rpm
   pony
+  rack-flash3
   rake
   resque
   rubyzip

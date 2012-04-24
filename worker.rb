@@ -36,7 +36,7 @@ class Pdfs
     temp_files = []
     processed_urls.uniq.each_with_index do |link, i|
       puts "Rendering Link #{link}"
-      temp_files << {:file => render_url_to_pdf(link,options) ,:name => URI(link.dup).to_s.split("//")[1]}
+      temp_files << {:file => render_url_to_pdf(link,options) ,:name => URI(link.dup).to_s.split("//")[1].gsub("/","-").gsub(/[?\/;:]/,"")}
     end
     Zip::ZipOutputStream.open(t.path) do |z|
       temp_files.each do |file|

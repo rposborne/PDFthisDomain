@@ -1,4 +1,5 @@
 require 'sinatra'
+require 'rack-flash'
 require 'haml'
 require 'uri'
 require 'metainspector'
@@ -17,7 +18,7 @@ end
 DataMapper.setup(:default, ENV['DATABASE_URL'] || 'sqlite3::memory:')
 DataMapper.auto_upgrade!
 enable :sessions
-
+use Rack::Flash
 
 #Prep Resque with the REDIS connection string
 uri = URI.parse(ENV["REDISTOGO_URL"])
@@ -31,11 +32,16 @@ end
 # Pass back an array of spidered Links
 post '/prepare' do
   @limit = 2
-  @processed_urls = []
-  page = MetaInspector.new(params["url"])
-  @processed_urls = page.absolute_links.map { |link| link  unless ( URI.parse(link).host != URI.parse(params["url"]).host ) rescue nil }.flatten.compact.uniq
-  haml :prepare, :format => :html5, :layout => :application
-
+  begin
+    page = Timeout::timeout(2) {
+       MetaInspector.new(params["url"]).absolute_links
+    } 
+    @processed_urls = page.map { |link| link  unless ( URI.parse(link).host != URI.parse(params["url"]).host ) rescue nil }.flatten.compact.uniq 
+    haml :prepare, :format => :html5, :layout => :application
+  rescue
+    @status = true
+    haml :index, :format => :html5, :layout => :application
+  end
 end
 
 post '/process' do 

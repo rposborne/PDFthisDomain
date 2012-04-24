@@ -1,8 +1,14 @@
 .hero-unit
   %h1 PDF this Domain
   %p 
-    This will create a set of PDFs for a given url.   It will follow the top 10 links in your domain. 
+    This will create a set of PDFs for a given url.   
   %br
+  -if @status 
+    .alert.alert-danger
+      %strong Hmmm
+      Something Appears to have gone wrong when we tried to look up 
+      %a{:href => "#{params['url']}"} #{params['url']}
+      Check the address and try again!
   %form#url-lookup.form-inline{:method => :post, :action => "/prepare"}
     .control-group
       .controls

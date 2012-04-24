@@ -13,6 +13,7 @@ gem 'bitly'
 gem 'data_mapper'
 gem 'dm-types'
 gem 'metainspector'
+gem 'rack-flash3'
 
 group :development do 
   gem 'dm-sqlite-adapter' 

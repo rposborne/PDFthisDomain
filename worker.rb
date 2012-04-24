@@ -8,7 +8,7 @@ require 'active_support/core_ext/class/attribute_accessors'
 require 'active_support/core_ext/object/blank'
 require 'net/http'
 require 'tempfile'
-
+require 'benchmark'
 
 ENV['APP_ROOT'] ||= File.dirname(__FILE__)
 
@@ -31,59 +31,61 @@ class Pdfs
     processed_urls = job["urls_to_process"]
     options        = job["options"]
     name           = "#{email}_#{Time.now}.zip"
+    time = Benchmark.realtime do
 
-    t = Tempfile.new(name)
-    temp_files = []
-    processed_urls.uniq.each_with_index do |link, i|
-      puts "Rendering Link #{link}"
-      temp_files << {:file => render_url_to_pdf(link,options) ,:name => URI(link.dup).to_s.split("//")[1].gsub("/","-").gsub(/[?\/;:]/,"")}
-    end
-    Zip::ZipOutputStream.open(t.path) do |z|
-      temp_files.each do |file|
-        title = file[:name]
-        title += ".pdf" unless title.end_with?(".pdf")
-        z.put_next_entry(title)
-        z.print file[:file].read
+
+      t = Tempfile.new(name)
+      temp_files = []
+      processed_urls.uniq.each_with_index do |link, i|
+        puts "Rendering Link #{link}"
+        temp_files << {:file => render_url_to_pdf(link,options) ,:name => URI(link.dup).to_s.split("//")[1].gsub("/","-").gsub(/[?\/;:]/,"")}
       end
-    end
+      Zip::ZipOutputStream.open(t.path) do |z|
+        temp_files.each do |file|
+          title = file[:name]
+          title += ".pdf" unless title.end_with?(".pdf")
+          z.put_next_entry(title)
+          z.print file[:file].read
+        end
+      end
 
-    storage = Fog::Storage.new(
+      storage = Fog::Storage.new(
       :provider                 => 'AWS',
       :aws_secret_access_key    => ENV["S3_SECRET"],
       :aws_access_key_id        => ENV["S3_KEY"]  
-    )
-    directory = storage.directories.get("pdfthisdomain")
-    object = directory.files.create(
-    :key    => name,
-    :body   => t.read,
-    :public => true
-    )
-    puts "Upload to S3 #{object.public_url} with attachment size of #{t.size}"
-    puts "sending mail with attachment size of #{object.public_url}"
-    
-    Pony.mail({ :to => email,
-      :from => 'pdfthisdomain@burningpony.com',
-      :subject => 'The PDFs you requested!', 
-      :headers => { 'Content-Type' => 'text/html' },
-      :body => "<h3>Good News!</h3> <br /> The PDF's you requested just finished rendering. You can find them for download <a href =\"#{object.public_url}\"> Here</a>.<br \> <strong>Just a heads up! </strong> They will only be avaliable for the next 24 hours.<br \> <br \> Thanks, <br \> PDFthisDomain",
-      :via => :smtp,
-      :via_options => {
-        :address              => 'smtp.gmail.com',
-        :port                 => '587',
-        :enable_starttls_auto => true,
-        :user_name            => ENV["GMAIL_USER"],
-        :password             => ENV["GMAIL_PASSWORD"],
-        :authentication       => :plain, 
-        :domain               => "pdfthisdomain.com"
-      }
-    })
-    
-    report_to_app_server({:id => id, :order => { :long_url => object.public_url , :short_url => "" , :status => "Complete"}})
+      )
+      directory = storage.directories.get("pdfthisdomain")
+      object = directory.files.create(
+      :key    => name,
+      :body   => t.read,
+      :public => true
+      )
+      puts "Upload to S3 #{object.public_url} with attachment size of #{t.size}"
+      puts "sending mail with attachment size of #{object.public_url}"
+
+      Pony.mail({ :to => email,
+        :from => 'pdfthisdomain@burningpony.com',
+        :subject => 'The PDFs you requested!', 
+        :headers => { 'Content-Type' => 'text/html' },
+        :body => "<h3>Good News!</h3> <br /> The PDF's you requested just finished rendering. You can find them for download <a href =\"#{object.public_url}\"> Here</a>.<br \> <strong>Just a heads up! </strong> They will only be avaliable for the next 24 hours.<br \> <br \> Thanks, <br \> PDFthisDomain",
+        :via => :smtp,
+        :via_options => {
+          :address              => 'smtp.gmail.com',
+          :port                 => '587',
+          :enable_starttls_auto => true,
+          :user_name            => ENV["GMAIL_USER"],
+          :password             => ENV["GMAIL_PASSWORD"],
+          :authentication       => :plain, 
+          :domain               => "pdfthisdomain.com"
+        }
+        })
+      end
+      report_to_app_server({:id => id, "order[long_url]" => object.public_url , "order[short_url]" => "" , "order[status]" => "Complete", "order[milisecond_to_render]" => time * 1000 })
+    end
   end
-end
 
 def report_to_app_server(data)
-  postData = Net::HTTP.post_form(URI.parse('http://www.pdfthisdomain.com/worker_endpoint'), data )  
+  postData = Net::HTTP.post_form(URI.parse('http://localhost:4567/worker_endpoint'), data )  
   return postData
 end
 

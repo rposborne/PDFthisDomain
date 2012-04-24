@@ -65,7 +65,7 @@ class Pdfs
       :from => 'pdfthisdomain@burningpony.com',
       :subject => 'The PDFs you requested!', 
       :headers => { 'Content-Type' => 'text/html' },
-      :body => "<h3>Good News!</h3> <br /> The PDF's you requested just finished rendeing. You can find them <a href =\"#{object.public_url}\"> Here</a>.<br \> <strong>Just a heads up! </strong> They will only be avaliable for the next 24 hours.<br \> <br \> Thanks, <br \> PDFthisDomain",
+      :body => "<h3>Good News!</h3> <br /> The PDF's you requested just finished rendering. You can find them for download <a href =\"#{object.public_url}\"> Here</a>.<br \> <strong>Just a heads up! </strong> They will only be avaliable for the next 24 hours.<br \> <br \> Thanks, <br \> PDFthisDomain",
       :via => :smtp,
       :via_options => {
         :address              => 'smtp.gmail.com',

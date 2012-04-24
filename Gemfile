@@ -11,6 +11,7 @@ gem 'pony'
 gem 'active_support'
 gem 'bitly'
 gem 'data_mapper'
+gem 'dm-types'
 gem 'metainspector'
 
 group :development do 

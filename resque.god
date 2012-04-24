@@ -13,7 +13,7 @@ num_workers.times do |num|
     w.group    = 'resque'
     w.interval = 30.seconds
     w.env      = {"QUEUE"=>"critical,high,low", "RAILS_ENV"=>rails_env , "S3_KEY" => s3_key , "S3_SECRET" => s3_secret, "REDISTOGO_URL" => redistogo_url}
-    w.start    = "bundle exec rake -f #{rails_root}/Rakefile resque:work"
+    w.start    = "rake -f #{rails_root}/Rakefile resque:work"
 
     w.uid = 'root'
     w.gid = 'root'

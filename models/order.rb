@@ -4,7 +4,7 @@ class Order
   property :id,         Serial
   property :tx_id, Text
   property :status,       String
-  property :urls,       Text
+  property :urls,       Object
   property :long_url, Text
   property :short_url , String
   property :options,       Text

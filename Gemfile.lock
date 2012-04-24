@@ -151,6 +151,7 @@ DEPENDENCIES
   data_mapper
   dm-postgres-adapter
   dm-sqlite-adapter
+  dm-types
   fog
   haml
   metainspector

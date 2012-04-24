@@ -72,7 +72,7 @@ get '/admin/orders' do
 end
 
 post '/worker_endpoint' do
-@order.get(params["id"])
+@order = Order.get(params["id"])
 @order.attributes = params["order"]
 @order.save 
 "OK"

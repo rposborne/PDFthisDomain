@@ -11,6 +11,7 @@ class Order
   property :ip, String
   property :email, String
   property :raw, Text
+  property :milisecond_to_render, Float
   property :created_at, DateTime
   property :updated_at, DateTime
 

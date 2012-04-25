@@ -104,11 +104,10 @@ def render_url_to_image(url, options={})
   t = Tempfile.new("url")
   puts "Rendering Link #{url}  to #{t.path}"
   wk =  File.join(ENV['APP_ROOT'], "bin", "wkhtmltoimage-amd64") || `which wkhtmltoimage`
-  command = "#{wk.strip} #{url} #{Shellwords.escape(t.path)} #{parse_options(options.nil? ? {} : options)}"
+  command = "#{wk.strip} #{url} #{Shellwords.escape(t.path + ".jpg")} #{parse_options(options.nil? ? {} : options)}"
   puts "Command Passed to wkhtmltopdf #{command}"
   system("#{command}")
-  
-  return t
+  return File.read(t.path + ".jpg")
 end
 
 def parse_options(options)

@@ -85,15 +85,26 @@ class Pdfs
   end
 
 def report_to_app_server(data)
-  postData = Net::HTTP.post_form(URI.parse('http://localhost:4567/worker_endpoint'), data )  
+  postData = Net::HTTP.post_form(URI.parse('http://pdfthisdomain.com/worker_endpoint'), data )  
   return postData
 end
 
 def render_url_to_pdf(url, options={})
   t = Tempfile.new("#{Time.now}")
   puts "Rendering Link #{url}  to #{t.path}"
-  wk = File.join(ENV['APP_ROOT'], "bin", "wkhtmltopdf-amd64")
-  command = "\"#{wk}\" #{url} #{Shellwords.escape(t.path)} #{parse_options(options.nil? ? {} : options)}"
+  wk = `which wkhtmltopdf` || File.join(ENV['APP_ROOT'], "bin", "wkhtmltopdf-amd64")
+  command = "#{wk.strip} #{url} #{Shellwords.escape(t.path)} #{parse_options(options.nil? ? {} : options)}"
+  puts "Command Passed to wkhtmltopdf #{command}"
+  system("#{command}")
+  
+  return t
+end
+
+def render_url_to_image(url, options={})
+  t = Tempfile.new("url")
+  puts "Rendering Link #{url}  to #{t.path}"
+  wk = `which wkhtmltoimage` || File.join(ENV['APP_ROOT'], "bin", "wkhtmltoimage-amd64")
+  command = "#{wk.strip} #{url} #{Shellwords.escape(t.path)} #{parse_options(options.nil? ? {} : options)}"
   puts "Command Passed to wkhtmltopdf #{command}"
   system("#{command}")
   

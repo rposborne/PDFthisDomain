@@ -7,12 +7,13 @@ class Order
   property :urls,       Object
   property :long_url, Text
   property :short_url , String
-  property :options,       Text
+  property :options,       Yaml
   property :ip, String
   property :email, String
   property :raw, Text
   property :milisecond_to_render, Float
   property :created_at, DateTime
   property :updated_at, DateTime
+
 
 end

@@ -1,0 +1,17 @@
+%br
+%br
+%br
+%table.table
+  %thead
+    %tr
+      %th ID
+      %th Email
+  %tbody
+
+    -@orders.each do |order|
+      %tr
+        %td=order.id
+        %td=order.email
+        %td=order.urls
+        
+  

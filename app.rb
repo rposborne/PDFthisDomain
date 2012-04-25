@@ -14,11 +14,26 @@ require 'data_mapper'
 require './worker'
 require './models/order'
 
-#require 'debugger';
 DataMapper.setup(:default, ENV['DATABASE_URL'] || 'sqlite3::memory:')
 DataMapper.auto_upgrade!
 enable :sessions
 use Rack::Flash
+
+helpers do
+
+  def protected!
+    unless authorized?
+      response['WWW-Authenticate'] = %(Basic realm="Restricted Area")
+      throw(:halt, [401, "Not authorized\n"])
+    end
+  end
+
+  def authorized?
+    @auth ||=  Rack::Auth::Basic::Request.new(request.env)
+    @auth.provided? && @auth.basic? && @auth.credentials && @auth.credentials == ['admin', 'admin']
+  end
+
+end
 
 #Prep Resque with the REDIS connection string
 uri = URI.parse(ENV["REDISTOGO_URL"])
@@ -45,16 +60,17 @@ post '/prepare' do
 end
 
 post '/process' do 
-  if session[:current_order]
-    @order = Order.get(session[:current_order])
+  if session[:current_order] && @order = Order.get(session[:current_order])
+    
     @order.email = params["email"]
     @order.status = "Sent to Queue (Purchased)"
     @order.save
-    @job = Resque.enqueue(Pdfs, {:id => @order.id, :email => @order.email, :url => @order.urls.first, :urls_to_process => @order.urls, :options =>  params["options"] })   
+    @job = Resque.enqueue(Pdfs, {:id => @order.id, :email => @order.email, :url => @order.urls.first, :urls_to_process => @order.urls, :options =>  @order.options })   
   else
-    @order = Order.create(:email => params["email"], :urls => params["urls"].map {|i, l| l},:status => "Sent to Queue (Free)", :raw => params ,:created_at => Time.now,:updated_at => Time.now)
-    @job = Resque.enqueue(Pdfs, {:id => @order.id, :email => @order.email, :url => @order.urls.first, :urls_to_process => @order.urls, :options =>  params["options"] })   
+    @order = Order.create(:email => params["email"], :urls => params["urls"].map {|i, l| l},:status => "Sent to Queue (Free)", :raw => params ,:created_at => Time.now,:updated_at => Time.now, :options => params["options"])
+    @job = Resque.enqueue(Pdfs, {:id => @order.id, :email => @order.email, :url => @order.urls.first, :urls_to_process => @order.urls, :options =>  @order.options })   
   end 
+  session[:current_order] = 0
   haml :success, :format => :html5, :layout => :application
 end
 
@@ -65,16 +81,27 @@ get '/process' do
 end
 
 post '/store' do
-  @order = Order.create(:urls => params["urls"].map {|i, l| l},:status => "Sent To Payment", :raw => params ,:created_at => Time.now,:updated_at => Time.now)
+  @order = Order.create(:urls => params["urls"].map {|i, l| l},:status => "Sent To Payment", :raw => params ,:created_at => Time.now,:updated_at => Time.now, :options =>  params["options"])
   session[:current_order] = @order.id
   content_type :json
   @order.to_json
 end
 
+get '/preview' do
+  session[:preview_count] ||= 0
+  if session[:preview_count] < 2
+     # session[:preview_count] += 1
+      content_type "image/jpg"
+      render_url_to_image(params[:url])
+  else
+    "Preview Limit Reached"
+  end
+end
+
 get '/admin/orders' do 
-  @order = Order.all
-  content_type :json
-  @order.to_json
+  protected!
+  @orders = Order.all
+  haml :orders, :format => :html5, :layout => :application
 end
 
 post '/worker_endpoint' do

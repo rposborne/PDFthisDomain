@@ -2,7 +2,9 @@
   %h1 PDF this Domain
   %p 
     This will create a set of PDFs for a given url. 
-  %br
+  .alert.alert-info.alert-block
+    %strong Heads Up!
+    Your PDFs will be approximation of the webpages you select.  Various web technologies will cause the PDF to render poorly or not at all. 
   -if !@processed_urls.empty?   
     %h2
       URLs to Render
@@ -15,7 +17,7 @@
           %span#cost Free!
           %a.btn{:href => "/"} New URL
           %a#select-all.btn{:href => "#", "data-toggle"=>"button"} Select All
-          %a#purchase.hide_free.btn-success.btn{:href => "#"}
+          %a#purchase.hide_free.btn-success.catch.btn{:href => "#"}
             %i.icon-shopping-cart.icon-white
             Buy
     %br
@@ -23,19 +25,32 @@
       .hide.well 
         %h5 Options
         .form-inline
-          %label Margins
-          %input.span1{:placeholder => "Left", :name => :left_margin}
-          %input.span1{:placeholder => "Right", :name => :right_margin}
-          %input.span1{:placeholder => "Top", :name => :top_margin}
-          %input.span1{:placeholder => "Bottom", :name => :bottom_margin}
           %label.control-label Show Background
-          %input{:type => :checkbox} 
+          %input{:type => :checkbox,:name => "options[show_background]" , "checked" => "" , :value => 1}
+          %label Margins
+          .input-prepend
+            %span.add-on L
+            %input.span1{:placeholder => "Left", :name => "options[margin][left]", :value => 0}
+          .input-prepend
+            %span.add-on R
+            %input.span1{:placeholder => "Right", :name => "options[margin][right]", :value => 0}
+          .input-prepend
+            %span.add-on T
+            %input.span1{:placeholder => "Top", :name => "options[margin][top]", :value => 0}
+          .input-prepend
+            %span.add-on B
+            %input.span1{:placeholder => "Bottom", :name => "options[margin][bottom]", :value => 0}
+          
       .well
         -@processed_urls.each_with_index do |link , i|
           .url.alert{:class => "#{"alert-success" if i <= @limit }#{"alert-danger" if i > @limit; }"}
             %input.urls{:type => :checkbox, :name => "urls[#{i}]" , :value => "#{link}" , "#{'checked' if i <= @limit}" => ""}
             #{link} 
             .pull-right
+              -if i == 0
+                %a{:href => "/preview?url=#{link}", :style => "opacity:.8", :class => "btn-mini btn to_modal"}
+                  %i.icon-share
+                  Preview
               %a{:href => link, :target => :blank, :style => "opacity:.5"}
                 %i.icon-share-alt
         .control-group

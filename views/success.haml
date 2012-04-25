@@ -3,7 +3,6 @@
   %br
 
   -if @paypal
-    =@order.inspect
     .alert.alert-info Your Job is ready to be processed. We just need your email so we can send you the finished product.
     %form{:action => "/process",:method => :post}
       %input.super{:type => :email, :name => :email , :placeholder => "So we can send you your PDF's!"}

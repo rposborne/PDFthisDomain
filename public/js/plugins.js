@@ -74,10 +74,10 @@ $("form#url-lookup").submit(function(e) {
   }
 });
 
-$("form#prepare-form").submit(function(e) {
+$(".catch").click(function(e) {
   if (!window.pdfthisdomain) {
     e.preventDefault();
-    $.post("/store", $(this).serializeArray(),
+    $.post("/store", $("form#prepare-form").serializeArray(),
      function(data){
        window.pdfthisdomain = true;
        console.log(data);
@@ -86,7 +86,18 @@ $("form#prepare-form").submit(function(e) {
   };
 });
 
-
+$('.to_modal').click(function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    var href = $(e.target).attr('href');
+    if (href.indexOf('#') == 0) {
+        $(href).modal('open');
+    } else {
+        $.get(href, function(data) {
+            $('<div class="modal fade" >' + data + '</div>').modal();
+        });
+    }
+});
 function store_urls() {
   var checked = $("input.urls:checked").map(function() {
     return $(this).val();

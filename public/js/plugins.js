@@ -89,13 +89,16 @@ $(".catch").click(function(e) {
 $('.to_modal').click(function(e) {
     e.preventDefault();
     e.stopPropagation();
+    $(this).button('loading');
+    $(this).addClass("disabled")
     var href = $(e.target).attr('href');
     if (href.indexOf('#') == 0) {
         $(href).modal('open');
     } else {
-        $.get(href, function(data) {
-            $('<div class="modal fade" >' + data + '</div>').modal();
-        });
+        
+            
+            $('<div class="modal fade" ><img src=' + href + '/></div>').modal();
+       
     }
 });
 function store_urls() {

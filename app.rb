@@ -91,7 +91,7 @@ get '/preview' do
   session[:preview_count] ||= 0
   if session[:preview_count] < 2
      # session[:preview_count] += 1
-      content_type "image/jpg"
+      content_type "image/jpeg"
       render_url_to_image(params[:url])
   else
     "Preview Limit Reached"

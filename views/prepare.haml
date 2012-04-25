@@ -48,7 +48,7 @@
             #{link} 
             .pull-right
               -if i == 0
-                %a{:href => "/preview?url=#{link}", :style => "opacity:.8", :class => "btn-mini btn to_modal"}
+                %btn{:href => "/preview?url=#{link}", :style => "opacity:.8", :class => "btn-mini btn to_modal", "data-loading-text"=>"rendering"}
                   %i.icon-share
                   Preview
               %a{:href => link, :target => :blank, :style => "opacity:.5"}

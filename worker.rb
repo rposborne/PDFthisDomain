@@ -92,7 +92,7 @@ end
 def render_url_to_pdf(url, options={})
   t = Tempfile.new("#{Time.now}")
   puts "Rendering Link #{url}  to #{t.path}"
-  wk = `which wkhtmltopdf` || File.join(ENV['APP_ROOT'], "bin", "wkhtmltopdf-amd64")
+  wk = File.join(ENV['APP_ROOT'], "bin", "wkhtmltopdf-amd64") || `which wkhtmltopdf`
   command = "#{wk.strip} #{url} #{Shellwords.escape(t.path)} #{parse_options(options.nil? ? {} : options)}"
   puts "Command Passed to wkhtmltopdf #{command}"
   system("#{command}")
@@ -103,7 +103,7 @@ end
 def render_url_to_image(url, options={})
   t = Tempfile.new("url")
   puts "Rendering Link #{url}  to #{t.path}"
-  wk = `which wkhtmltoimage` || File.join(ENV['APP_ROOT'], "bin", "wkhtmltoimage-amd64")
+  wk =  File.join(ENV['APP_ROOT'], "bin", "wkhtmltoimage-amd64") || `which wkhtmltoimage`
   command = "#{wk.strip} #{url} #{Shellwords.escape(t.path)} #{parse_options(options.nil? ? {} : options)}"
   puts "Command Passed to wkhtmltopdf #{command}"
   system("#{command}")

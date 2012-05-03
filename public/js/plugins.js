@@ -165,7 +165,7 @@ $("#select-all").click(function(e) {
 });
 
 $('input[name="email"]').blur(function(e) {
-mixpanel.identify($(this).val());
+mixpanel.name_tag($(this).val());
 mixpanel.track('Entered Email', {'email': $(this).val() });
 });
 

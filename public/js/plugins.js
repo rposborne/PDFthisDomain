@@ -32,12 +32,14 @@ function formatCurrency(num) {
   return (((sign)?'':'-') + '$' + num + '.' + cents);
 }
 
-$("input:first").keyup(function() {
+$("#url-lookup").keyup(function() {
   if (re_weburl.test($("input:first").val())) {
-    $("i").addClass("icon-ok").removeClass("icon-remove");
-
+    $("#url-lookup-submit").removeClass("disabled");
+    $("#url-lookup-submit").removeClass("btn-danger").addClass("btn-success");
+    mixpanel.track('Valid URL',{'url': $("input:first").val()});
   }  else{
-    $("i").removeClass("icon-ok").addClass("icon-remove");
+    $("#url-lookup-submit").addClass("disabled");
+    $("#url-lookup-submit").addClass("btn-danger");
     return false;
 
   }
@@ -62,7 +64,7 @@ var opts = {
 var target = document.getElementById('status');
 var spinner = new Spinner(opts).spin(target);
 
-$("form#url-lookup").submit(function(e) {
+$("#url-lookup").submit(function(e) {
   e.preventDefault();
   if (re_weburl.test($("input:first").val())) {
     mixpanel.track('URL Look up',{'url': $("input:first").val()});

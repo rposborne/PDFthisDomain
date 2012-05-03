@@ -1,7 +1,7 @@
 .hero-unit
-  %h1 PDF this Domain
+  %h1 Print Your Website
   %p 
-    This will create a set of PDFs for a given url.   
+    No more annoying screenshots just your REAL website as printable PDF's
   %br
   -if @status 
     .alert.alert-danger
@@ -13,7 +13,7 @@
     .control-group
       .controls
         %input#url-lookup.super{:name => :url , :value => "#{"http://" unless params['url']}#{params["url"] if params["url"]  }", :placeholder => "URL"}
-        %input.btn.btn-primary.btn-large{:type => :submit, :value => "PDF it"} 
+        %input#url-lookup-submit.btn.btn-primary.btn-large.disabled{:type => :submit, :value => "PDF it"} 
   .status.span12
     %br
     #status.hide

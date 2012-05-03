@@ -65,6 +65,7 @@ var spinner = new Spinner(opts).spin(target);
 $("form#url-lookup").submit(function(e) {
   e.preventDefault();
   if (re_weburl.test($("input:first").val())) {
+    mixpanel.track('URL Look up',{'url': $("input:first").val()});
     this.submit();
     $("#status").show();
     return true;
@@ -105,16 +106,17 @@ $('.to_modal').click(function(e) {
     }
 });
 function store_urls() {
-  mixpanel.track('URLS Stored');
+  
   var checked = $("input.urls:checked").map(function() {
     return $(this).val();
   })
+  mixpanel.track('URLS Stored',{'urls_to_process': checked.toArray()});
   store.set('urls_to_process', checked.toArray() );
 }
 
 function updateView() {
   var total = $("input.urls:checked").size();
-  var limit = 3
+  var limit = 20
   var remaining = limit - total ;
   var cost = (Math.abs(total - limit)) * 0.10;
 
@@ -160,6 +162,11 @@ $("#select-all").click(function(e) {
   mixpanel.track('Select All URLS');
   $('input.urls').attr("checked",!$(this).hasClass("active"));
   updateView();
+});
+
+$('input[name="email"]').blur(function(e) {
+mixpanel.identify($(this).val());
+mixpanel.track('Entered Email', {'email': $(this).val() });
 });
 
 $("div.url").click(function(e) {

@@ -40,20 +40,21 @@ uri = URI.parse(ENV["REDISTOGO_URL"])
 Resque.redis = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
 
 get '/' do
+  
   haml :index, :format => :html5, :layout => :application
 end
 
 # Handle a Post to the root URL
 # Pass back an array of spidered Links
 post '/prepare' do
-  @limit = 2
+  @limit = 19
   begin
     page = Timeout::timeout(2) {
        MetaInspector.new(params["url"]).absolute_links
     } 
     @processed_urls = page.map { |link| link  unless ( URI.parse(link).host != URI.parse(params["url"]).host ) rescue nil }.flatten.compact.uniq 
     haml :prepare, :format => :html5, :layout => :application
-  rescue
+  rescue Timeout::Error
     @status = true
     haml :index, :format => :html5, :layout => :application
   end

@@ -47,7 +47,7 @@ end
 # Handle a Post to the root URL
 # Pass back an array of spidered Links
 post '/prepare' do
-  @limit = 19
+  @limit = 4
   begin
     page = Timeout::timeout(2) {
        MetaInspector.new(params["url"]).absolute_links

@@ -81,17 +81,20 @@ $(".catch").click(function(e) {
      function(data){
        window.pdfthisdomain = true;
        console.log(data);
+       mixpanel.track('Purchased', {'Amount': $("#cost").text()});
        $("form#prepare-form").submit();
      }, "json");
   };
 });
 
 $('.to_modal').click(function(e) {
+    
     e.preventDefault();
     e.stopPropagation();
     $(this).button('loading');
     $(this).addClass("disabled")
     var href = $(e.target).attr('href');
+    mixpanel.track('Previewed URL', { "Url": href });
     if (href.indexOf('#') == 0) {
         $(href).modal('open');
     } else {
@@ -102,6 +105,7 @@ $('.to_modal').click(function(e) {
     }
 });
 function store_urls() {
+  mixpanel.track('URLS Stored');
   var checked = $("input.urls:checked").map(function() {
     return $(this).val();
   })
@@ -144,19 +148,24 @@ function update_url_classes() {
 }
 $("input.urls").click(function(e) {
   updateView();
+  mixpanel.track('Selected Url', {'mp_note': "Did not use checkbox", "Url": $(this).val() });
   e.stopPropagation();
 });
 $("a#purchase").click(function(e) {
+  
   $(".catch").click();
 });
 
 $("#select-all").click(function(e) {
+  mixpanel.track('Select All URLS');
   $('input.urls').attr("checked",!$(this).hasClass("active"));
   updateView();
 });
 
 $("div.url").click(function(e) {
+
   var $checkbox = $(this).find("input.urls");
+  mixpanel.track('Selected Url', {'mp_note': "Did not use checkbox", "Url": $checkbox.val() });
   $checkbox.attr('checked', !$checkbox.attr('checked'));
   updateView();
 });

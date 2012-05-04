@@ -24,8 +24,8 @@ $("#url-lookup").keyup(function() {
   }  else{
     $("#url-lookup-submit").addClass("disabled");
     $("#url-lookup-submit").addClass("btn-danger");
+    mixpanel.track('Invalid URL',{'url': $("input:first").val()});
     return false;
-
   }
 })
 var timeout = 30;
@@ -128,6 +128,8 @@ function updateView() {
   $("#purchase_amount").val(total - 3);
   update_url_classes();
   store_urls();
+
+
   return remaining;
 }
 

@@ -25,7 +25,7 @@
     /[if lt IE 7] <p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p>
     %header
     %a{:href => "https://github.com/rposborne/PDFthisDomain"}
-      %img{:alt => "Fork me on GitHub", :src => "https://a248.e.akamai.net/camo.github.com/5d21241b64dc708fcbb701f68f72f41e9f1fadd6/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f7265645f6161303030302e706e67", :style => "position: absolute; top: 0; left: 0; border: 0;"}/
+      %img{:alt => "Fork me on GitHub", :src => "https://a248.e.akamai.net/camo.github.com/5d21241b64dc708fcbb701f68f72f41e9f1fadd6/687474703a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f6c6566745f7265645f6161303030302e706e67", :style => "position: absolute; top: 0; left: 0; border: 0; z-index:100000000;"}/
     .navbar.navbar-fixed-top
       .navbar-inner
         .container
@@ -36,5 +36,6 @@
           %a.brand{:href => "/"} PDFthisDomain
     .container
       =yield
+
     %script{:src => "/js/plugins.js"}      
 

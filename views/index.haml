@@ -11,6 +11,9 @@
       %a{:href => "#{params['url']}"} #{params['url']}
       Took too long to respond or does not exist!
       Check the address and try again!
+      :javascript
+        mixpanel.track('URL Failed',{'url': #{params['url']}});
+        
   %form#url-lookup.form-inline{:method => :post, :action => "/prepare"}
     .control-group
       .controls

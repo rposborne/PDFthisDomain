@@ -49,7 +49,7 @@ end
 post '/prepare' do
   @limit = 4
   begin
-    page = Timeout::timeout(2) {
+    page = Timeout::timeout(4) {
        MetaInspector.new(params["url"]).absolute_links
     } 
     @processed_urls = page.map { |link| link  unless ( URI.parse(link).host != URI.parse(params["url"]).host ) rescue nil }.flatten.compact.uniq 

@@ -48,14 +48,13 @@
             %input.urls{:type => :checkbox, :name => "urls[#{i}]" , :value => "#{link}" , "#{'checked' if i <= @limit}" => ""}
             #{link} 
             .pull-right
-              -if i == 0
+              -if i == 0 || i == 2
                 %btn{:href => "/preview?url=#{link}", :style => "opacity:.8", :class => "btn-mini btn to_modal", "data-loading-text"=>"rendering"}
                   %i.icon-share
                   Preview
               %a{:href => link, :target => :blank, :style => "opacity:.5"}
                 %i.icon-share-alt
         .control-group
-          %label.control-label.hide.hide_cost Email
           .controls       
             %input{:name => "business", :type => "hidden", :value => "VDW4BG32T2X3S"}
             %input{:name => "no_note", :type => "hidden", :value => "1"}

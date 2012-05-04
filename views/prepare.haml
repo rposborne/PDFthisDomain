@@ -20,8 +20,9 @@
     %br
     %form{:id => "prepare-form", :action => "https://www.sandbox.paypal.com/cgi-bin/webscr", :method => "post"}
       .well
+        %label.hide_cost Your Email 
         %input.hide_cost.hide.super{:type => :email, :name => :email , :placeholder => "An Email we can send you your PDF's!"}
-        %input.hide_cost.hide.btn.btn-success.btn-large{:type => :submit, :value => "Do It!"}
+        %input.hide_cost.hide.btn.btn-success.btn-large{:type => :submit, :value => "Render!"}
         %input.catch.hide_free.hide.pay-btn.btn.btn-success.btn-large{ :type => :submit, :value => "Buy!"}
       .hide.well 
         %h5 Options
@@ -52,8 +53,9 @@
                 %btn{:href => "/preview?url=#{link}", :style => "opacity:.8", :class => "btn-mini btn to_modal", "data-loading-text"=>"rendering"}
                   %i.icon-share
                   Preview
-              %a{:href => link, :target => :blank, :style => "opacity:.5"}
+              %a{:href => link, :target => :blank, :style => "opacity:.5", :class=> "btn-mini btn"}
                 %i.icon-share-alt
+                View Link
         .control-group
           .controls       
             %input{:name => "business", :type => "hidden", :value => "VDW4BG32T2X3S"}

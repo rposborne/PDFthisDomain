@@ -80,7 +80,10 @@ class Pdfs
         }
         })
       end
-      report_to_app_server({:id => id, "order[long_url]" => object.public_url , "order[short_url]" => "" , "order[status]" => "Complete", "order[milisecond_to_render]" => time * 1000 })
+      
+      if object
+        report_to_app_server({:id => id, "order[long_url]" => object.public_url , "order[short_url]" => "" , "order[status]" => "Complete", "order[milisecond_to_render]" => time * 1000 })
+      end
     end
   end
 

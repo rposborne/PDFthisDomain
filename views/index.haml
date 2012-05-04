@@ -19,9 +19,16 @@
       .controls
         %input#url-lookup.super{:name => :url, :placeholder => "Enter a url location (e.g. http://www.cnn.com)", :value => "#{params["url"] if params["url"]  }"}
         %input#url-lookup-submit.btn.btn-primary.btn-large.disabled{:type => :submit, :value => "PDF it"} 
-  .status.span12
-    %br
-    #status.hide
+  .offset5.span3
+    #status.hide{:style => "padding-top:20px;"}
+%h3 Examples
+%ul.thumbnails
+  -4.times do |i|
+    %li.span3
+      %a.thumbnail{:class => "to_prevew_modal", :href => "/img/preview-#{i+1}.jpeg", :target => :blank}
+        %img{:alt => "", :src => "/img/thumbs/preview-#{i+1}.jpg"}
+
+
 != haml :footer
 :erb
   <!-- begin olark code --><script type='text/javascript'>/*{literal}<![CDATA[*/

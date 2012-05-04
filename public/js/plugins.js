@@ -90,12 +90,21 @@ $('.to_modal').click(function(e) {
     if (href.indexOf('#') == 0) {
         $(href).modal('open');
     } else {
-        
-            
-            $('<div class="modal fade" ><img src=' + href + '/></div>').modal();
-       
+      $('<div class="modal fade" ><img src=' + href + '/></div>').modal();  
     }
 });
+
+$('.to_prevew_modal').click(function(e) {
+    
+    e.preventDefault();
+    e.stopPropagation();
+    console.log(this)
+    var href = $(this).attr('href');
+    
+    $('<div class="modal fade" ><img src=' + href + '/></div>').modal();
+    mixpanel.track('Viewed Example', { 'mp_note': href, });
+});
+
 function store_urls() {
   
   var checked = $("input.urls:checked").map(function() {

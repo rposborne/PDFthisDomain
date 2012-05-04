@@ -9,7 +9,7 @@ window.onerror = function(message, file, line) {
     prop.message = message;
     prop.file = file;
     prop.line = line;
-    mpq.track('js-err',prop);
+    mixpanel.track('js-err',prop);
 }
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', 'UA-31057886-1']);

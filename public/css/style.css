@@ -10,3 +10,6 @@ input.pay-btn{
   font-size:15px;
   margin-bottom:0;
 }
+.habla_conversation_text_span, .hbl_pal_main_fg {
+  float:none;
+}

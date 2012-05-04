@@ -54,7 +54,7 @@ post '/prepare' do
     } 
     @processed_urls = page.map { |link| link  unless ( URI.parse(link).host != URI.parse(params["url"]).host ) rescue nil }.flatten.compact.uniq 
     haml :prepare, :format => :html5, :layout => :application
-  rescue Timeout::Error
+  rescue #Timeout::Error
     @status = true
     haml :index, :format => :html5, :layout => :application
   end

@@ -82,7 +82,7 @@ $('.to_modal').click(function(e) {
     $(this).button('loading');
     $(this).addClass("disabled")
     var href = $(e.target).attr('href');
-    mixpanel.track('Previewed URL', { "Url": href });
+    mixpanel.track('Previewed URL', { "Url": href,'mp_note': href, });
     if (href.indexOf('#') == 0) {
         $(href).modal('open');
     } else {

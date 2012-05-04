@@ -17,10 +17,8 @@
     %link{:href => "/css/bootstrap.min.css", :rel => "stylesheet"}
     %link{:href => "/css/style.css", :rel => "stylesheet"}
     %script{:src => "/js/libs/modernizr-2.5.3.min.js"}
-    %script{:src => "//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"}
-    %script{:src => "/js/jquery_ujs.js"}
-    %script{:src => "/js/bootstrap.min.js"}
-    %script{:src => "/js/libs/store.min.js"}
+    %script{:src => "/js/script.js"}
+    
   %body
     /[if lt IE 7] <p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p>
     %header
@@ -36,6 +34,9 @@
           %a.brand{:href => "/"} PDFthisDomain
     .container
       =yield
-
+    %script{:src => "//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"}
+    %script{:src => "/js/jquery_ujs.js"}
+    %script{:src => "/js/bootstrap.min.js"}
+    %script{:src => "/js/libs/store.min.js"}
     %script{:src => "/js/plugins.js"}      
 

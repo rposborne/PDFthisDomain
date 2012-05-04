@@ -48,11 +48,12 @@ end
 # Pass back an array of spidered Links
 post '/prepare' do
   @limit = 4
+  url = params["url"]
   begin
     page = Timeout::timeout(4) {
-       MetaInspector.new(params["url"]).absolute_links
+       MetaInspector.new(url).absolute_links
     } 
-    @processed_urls = page.map { |link| link  unless ( URI.parse(link).host != URI.parse(params["url"]).host ) rescue nil }.flatten.compact.uniq 
+    @processed_urls = page.map { |link| link  unless ( URI.parse(link).host != URI.parse(url.host ) rescue nil }.flatten.compact.uniq 
     haml :prepare, :format => :html5, :layout => :application
   rescue #Timeout::Error
     @status = true

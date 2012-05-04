@@ -17,7 +17,7 @@
   %form#url-lookup.form-inline{:method => :post, :action => "/prepare"}
     .control-group
       .controls
-        %input#url-lookup.super{:name => :url , :value => "#{"http://" unless params['url']}#{params["url"] if params["url"]  }", :placeholder => "URL"}
+        %input#url-lookup.super{:name => :url, :placeholder => "Enter a url location (e.g. http://www.cnn.com)", :value => "#{params["url"] if params["url"]  }"}
         %input#url-lookup-submit.btn.btn-primary.btn-large.disabled{:type => :submit, :value => "PDF it"} 
   .status.span12
     %br

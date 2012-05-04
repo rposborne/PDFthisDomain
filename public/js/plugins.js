@@ -19,12 +19,10 @@ function formatCurrency(num) {
 $("#url-lookup").keyup(function() {
   if (re_weburl.test($("input:first").val())) {
     $("#url-lookup-submit").removeClass("disabled");
-    $("#url-lookup-submit").removeClass("btn-danger").addClass("btn-success");
-    mixpanel.track('Valid URL',{'url': $("input:first").val()});
+    $("#url-lookup-submit").removeClass("btn-danger").addClass("btn-success");   
   }  else{
     $("#url-lookup-submit").addClass("disabled");
-    $("#url-lookup-submit").addClass("btn-danger");
-    mixpanel.track('Invalid URL',{'url': $("input:first").val()});
+    $("#url-lookup-submit").addClass("btn-danger");    
     return false;
   }
 })
@@ -50,12 +48,18 @@ var spinner = new Spinner(opts).spin(target);
 
 $("#url-lookup").submit(function(e) {
   e.preventDefault();
+  var check_http = /^https?:\/\//;
+   if (!check_http.test($("input:first").val())) {
+     var val = $("input:first").val();
+     $("input:first").val("http://" + val);
+   }
   if (re_weburl.test($("input:first").val())) {
-    mixpanel.track('URL Look up',{'url': $("input:first").val()});
+    mixpanel.track('Valid URL',{'url': $("input:first").val()});
     this.submit();
     $("#status").show();
     return true;
   }else{
+    mixpanel.track('Invalid URL',{'url': $("input:first").val()});
     return false;
 
   }

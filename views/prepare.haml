@@ -1,10 +1,8 @@
 .hero-unit
-  %h1 PDF this Domain
-  %p 
-    This will create a set of PDFs for a given url. 
   .alert.alert-info.alert-block
     %strong Heads Up!
     Your PDFs will be approximation of the webpages you select.  Various web technologies will cause the PDF to render poorly or not at all. 
+    %a.close{"data-dismiss" => "alert", :href => "#"} ×
   -if !@processed_urls.empty?   
     %h2
       URLs to Render
@@ -21,8 +19,9 @@
     %form{:id => "prepare-form", :action => "https://www.sandbox.paypal.com/cgi-bin/webscr", :method => "post"}
       .well
         %label.hide_cost Your Email 
-        %input.hide_cost.hide.super{:type => :email, :name => :email , :placeholder => "An Email we can send you your PDF's!"}
-        %input.hide_cost.hide.btn.btn-success.btn-large{:type => :submit, :value => "Render!"}
+        .control-group.input-success
+          %input.hide_cost.hide.super.input-success{:type => :email, :name => :email , :placeholder => "An Email we can send you your PDF's!"}
+          %input.hide_cost.hide.btn.btn-success.btn-large{:type => :submit, :value => "Render!"}
         %input.catch.hide_free.hide.pay-btn.btn.btn-success.btn-large{ :type => :submit, :value => "Buy!"}
       .hide.well 
         %h5 Options

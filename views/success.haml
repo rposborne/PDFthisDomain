@@ -4,7 +4,7 @@
 
   -if @paypal
     .alert.alert-info Your Job is ready to be processed. We just need your email so we can send you the finished product.
-    %form{:action => "/process",:method => :post}
+    %form{:action => "/process",:method => :post, :id =>"confirm-email"}
       %input.super{:type => :email, :name => :email , :placeholder => "So we can send you your PDF's!"}
       %input.btn.btn-danger.btn-large{:type => :submit, :value => "Start!"}
     

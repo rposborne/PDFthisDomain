@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-
    <url>
       <loc>http://www.pdfthisdomain.com/</loc>
-      <lastmod>2012-05-04</lastmod>
-      <changefreq>monthly</changefreq>
+      <lastmod>2012-05-05</lastmod>
+      <changefreq>daily</changefreq>
       <priority>1</priority>
-
+      <loc>http://pdfthisdomain.com/</loc>
+      <lastmod>2012-05-05</lastmod>
+      <changefreq>daily</changefreq>
+      <priority>1</priority>
    </url>
 </urlset>

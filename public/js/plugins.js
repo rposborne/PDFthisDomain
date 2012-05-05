@@ -1,5 +1,31 @@
 
+function isValidEmailAddress(emailAddress) {
+  var pattern = new RegExp(/^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.?$/i);
+  return pattern.test(emailAddress);
+};
 
+$('input[name="email"]').blur(function(e) {
+  mixpanel.name_tag($(this).val());
+  mixpanel.track('Entered Email', {'email': $(this).val() });
+});
+
+$('input[name="email"]').keyup(function(e) {
+  if (isValidEmailAddress($(this).val())) {
+    console.log("valid");
+    $(this).siblings('input[type=submit]').removeClass("disabled btn-danger").addClass("btn-success");;
+  }else{
+    $(this).siblings('input[type=submit]').addClass("disabled btn-danger").removeClass("btn-success");
+  };
+});
+
+$('#free_submit').click(function(e){
+  e.preventDefault();
+  var email = $('input[name="email"]');
+   if (isValidEmailAddress(email.val())) {
+     $(this).closest("form").submit();
+   }
+  
+});
 function formatCurrency(num) {
   num = num.toString().replace(/\$|\,/g,'');
   if(isNaN(num))
@@ -49,10 +75,10 @@ var spinner = new Spinner(opts).spin(target);
 $("#url-lookup").submit(function(e) {
   e.preventDefault();
   var check_http = /^https?:\/\//;
-   if (!check_http.test($("input:first").val())) {
-     var val = $("input:first").val();
-     $("input:first").val("http://" + val);
-   }
+  if (!check_http.test($("input:first").val())) {
+    var val = $("input:first").val();
+    $("input:first").val("http://" + val);
+  }
   if (re_weburl.test($("input:first").val())) {
     mixpanel.track('Valid URL',{'url': $("input:first").val()});
     this.submit();
@@ -66,21 +92,20 @@ $("#url-lookup").submit(function(e) {
 });
 
 $(".catch").click(function(e) {
-  if (!window.pdfthisdomain) {
+  if (!window.pdfthisdomain){
     e.preventDefault();
     window.pdfthisdomain = true;
-    $.post("/store", $("form#prepare-form").serializeArray(),
-     function(data){
-       
-       console.log(data);
-       mixpanel.track('Purchased', {'Amount': $("#cost").text()});
-       $("form#prepare-form").submit();
-     }, "json");
-  };
-});
+    $.post("/store", $("form#prepare-form").serializeArray(), function(data){
+      console.log(data);
+      mixpanel.track('Purchased', {'Amount': $("#cost").text()});
+      $("form#prepare-form").submit();
+    }, "json");
+    };
+  });
 
-$('.to_modal').click(function(e) {
-    
+
+  $('.to_modal').click(function(e) {
+
     e.preventDefault();
     e.stopPropagation();
     $(this).button('loading');
@@ -88,93 +113,89 @@ $('.to_modal').click(function(e) {
     var href = $(e.target).attr('href');
     mixpanel.track('Previewed URL', { "Url": href,'mp_note': href, });
     $('<div class="modal fade" ><img src=' + href + '/></div>').modal();  
-    
-});
 
-$('.to_prevew_modal').click(function(e) {
-    
+  });
+
+  $('.to_prevew_modal').click(function(e) {
+
     e.preventDefault();
     e.stopPropagation();
     console.log(this)
     var href = $(this).attr('href');
-    
+
     $('<div class="modal fade" ><img src=' + href + '/></div>').modal();
     mixpanel.track('Viewed Example', { 'mp_note': href, });
-});
-
-function store_urls() {
-  
-  var checked = $("input.urls:checked").map(function() {
-    return $(this).val();
-  })
-  
-  store.set('urls_to_process', checked.toArray() );
-  mixpanel.track('URLS Stored',{'urls_to_process': checked.toArray()});
-}
-
-function updateView() {
-  var total = $("input.urls:checked").size();
-  var limit = 5
-  var remaining = limit - total ;
-  var cost = (Math.abs(total - limit)) * 0.10;
-
-  if (remaining < 0 ) {
-    $("#cost").html(formatCurrency(cost)); 
-    $("form#prepare-form").attr( "action", "https://www.paypal.com/cgi-bin/webscr" );
-    $(".hide_free").show();
-    $(".hide_cost").hide();
-  };
-  if (remaining >= 0 ) {
-    $("#remaining").html(remaining); 
-    $("#cost").html("Free!");
-    $("form#prepare-form").attr( "action", "/process" )
-    $(".hide_free").hide();
-    $(".hide_cost").show();
-  };
-  if (total <= 0 ) {
-    $(".hide_cost").hide();
-    $(".hide_free").hide();
-  }
-  $("#purchase_amount").val(total - 3);
-  update_url_classes();
-  store_urls();
-
-
-  return remaining;
-}
-
-function update_url_classes() {
-  $("input.urls").each(function(index) {
-    $(this).parents(".alert").toggleClass("alert-danger", !this.checked ).toggleClass("alert-success", this.checked );
   });
-}
-$("input.urls").click(function(e) {
+
+  function store_urls() {
+
+    var checked = $("input.urls:checked").map(function() {
+      return $(this).val();
+    })
+
+    store.set('urls_to_process', checked.toArray() );
+    mixpanel.track('URLS Stored',{'urls_to_process': checked.toArray()});
+  }
+
+  function updateView() {
+    var total = $("input.urls:checked").size();
+    var limit = 5
+    var remaining = limit - total ;
+    var cost = (Math.abs(total - limit)) * 0.10;
+
+    if (remaining < 0 ) {
+      $("#cost").html(formatCurrency(cost)); 
+      $("form#prepare-form").attr( "action", "https://www.paypal.com/cgi-bin/webscr" );
+      $(".hide_free").show();
+      $(".hide_cost").hide();
+    };
+    if (remaining >= 0 ) {
+      $("#remaining").html(remaining); 
+      $("#cost").html("Free!");
+      $("form#prepare-form").attr( "action", "/process" )
+      $(".hide_free").hide();
+      $(".hide_cost").show();
+    };
+    if (total <= 0 ) {
+      $(".hide_cost").hide();
+      $(".hide_free").hide();
+    }
+    $("#purchase_amount").val(total - 3);
+    update_url_classes();
+    store_urls();
+
+
+    return remaining;
+  }
+
+  function update_url_classes() {
+    $("input.urls").each(function(index) {
+      $(this).parents(".alert").toggleClass("alert-danger", !this.checked ).toggleClass("alert-success", this.checked );
+    });
+  }
+  $("input.urls").click(function(e) {
+    updateView();
+    mixpanel.track('Selected Url', {'mp_note': "Did not use checkbox", "Url": $(this).val() });
+    e.stopPropagation();
+  });
+  $("a#purchase").click(function(e) {
+
+    $(".catch").click();
+  });
+
+  $("#select-all").click(function(e) {
+    mixpanel.track('Select All URLS');
+    $('input.urls').attr("checked",!$(this).hasClass("active"));
+    updateView();
+  });
+
+
+  $("div.url").click(function(e) {
+
+    var $checkbox = $(this).find("input.urls");
+    mixpanel.track('Selected Url', {'mp_note': "Did not use checkbox", "Url": $checkbox.val() });
+    $checkbox.attr('checked', !$checkbox.attr('checked'));
+    updateView();
+  });
+
   updateView();
-  mixpanel.track('Selected Url', {'mp_note': "Did not use checkbox", "Url": $(this).val() });
-  e.stopPropagation();
-});
-$("a#purchase").click(function(e) {
-  
-  $(".catch").click();
-});
-
-$("#select-all").click(function(e) {
-  mixpanel.track('Select All URLS');
-  $('input.urls').attr("checked",!$(this).hasClass("active"));
-  updateView();
-});
-
-$('input[name="email"]').blur(function(e) {
-mixpanel.name_tag($(this).val());
-mixpanel.track('Entered Email', {'email': $(this).val() });
-});
-
-$("div.url").click(function(e) {
-
-  var $checkbox = $(this).find("input.urls");
-  mixpanel.track('Selected Url', {'mp_note': "Did not use checkbox", "Url": $checkbox.val() });
-  $checkbox.attr('checked', !$checkbox.attr('checked'));
-  updateView();
-});
-
-updateView();

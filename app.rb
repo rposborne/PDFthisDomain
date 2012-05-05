@@ -40,7 +40,7 @@ uri = URI.parse(ENV["REDISTOGO_URL"])
 Resque.redis = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
 
 get '/' do
-  
+
   haml :index, :format => :html5, :layout => :application
 end
 
@@ -50,7 +50,7 @@ post '/prepare' do
   @limit = 4
   begin
     page = Timeout::timeout(4) {
-       MetaInspector.new(params["url"]).absolute_links
+      MetaInspector.new(params["url"]).absolute_links
     } 
     @processed_urls = page.map { |link| link  unless ( URI.parse(link).host != URI.parse(params["url"]).host ) rescue nil }.flatten.compact.uniq 
     haml :prepare, :format => :html5, :layout => :application
@@ -62,16 +62,22 @@ end
 
 post '/process' do 
   if session[:current_order] && @order = Order.get(session[:current_order])
-    
+
     @order.email = params["email"]
     @order.status = "Sent to Queue (Purchased)"
     @order.save
-    @job = Resque.enqueue(Pdfs, {:id => @order.id, :email => @order.email, :url => @order.urls.first, :urls_to_process => @order.urls, :options =>  @order.options })   
   else
     @order = Order.create(:email => params["email"], :urls => params["urls"].map {|i, l| l},:status => "Sent to Queue (Free)", :raw => params ,:created_at => Time.now,:updated_at => Time.now, :options => params["options"])
-    @job = Resque.enqueue(Pdfs, {:id => @order.id, :email => @order.email, :url => @order.urls.first, :urls_to_process => @order.urls, :options =>  @order.options })   
   end 
-  session[:current_order] = 0
+  if @order.email
+    session[:current_order] = 0
+    @job = Resque.enqueue(Pdfs, {:id => @order.id, :email => @order.email, :url => @order.urls.first, :urls_to_process => @order.urls, :options =>  @order.options })  
+  else
+    session[:current_order] = @order.id
+    @paypal = true
+  end
+
+
   haml :success, :format => :html5, :layout => :application
 end
 
@@ -91,9 +97,19 @@ end
 get '/preview' do
   session[:preview_count] ||= 0
   if session[:preview_count] < 2
-     # session[:preview_count] += 1
+    # session[:preview_count] += 1
+
+    begin
       content_type "image/jpeg"
-      render_url_to_image(params[:url])
+      Timeout::timeout(5) {
+        render_url_to_image(params[:url])
+      }
+    rescue 
+      content_type "text"
+      "This site took too long to render.  Please try again later."
+
+    end
+
   else
     "Preview Limit Reached"
   end
@@ -111,6 +127,6 @@ post '/worker_endpoint' do
     @order.attributes = params["order"]
     @order.save 
   end
-    content_type :json
+  content_type :json
   @order.to_json
 end

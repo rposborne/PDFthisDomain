@@ -5,9 +5,11 @@
       <lastmod>2012-05-05</lastmod>
       <changefreq>daily</changefreq>
       <priority>1</priority>
-      <loc>http://pdfthisdomain.com/</loc>
-      <lastmod>2012-05-05</lastmod>
-      <changefreq>daily</changefreq>
-      <priority>1</priority>
+   </url>
+   <url>
+     <loc>http://pdfthisdomain.com/</loc>
+     <lastmod>2012-05-05</lastmod>
+     <changefreq>daily</changefreq>
+     <priority>1</priority>
    </url>
 </urlset>

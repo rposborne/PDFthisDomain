@@ -68,7 +68,10 @@
             %input#purchase_amount{:name => "quantity", :type => "hidden", :value => "3"}
             %input{:name => "amount", :type => "hidden", :value => ".10"}
             %input{:name => "currency_code", :type => "hidden", :value => "USD"}
-
+  -else
+    .alert.alert-danger.alert-block
+      We were unable to retrieve any active links off your site. Try contacting support via the chat window below!  
+    
             
 
 != haml :footer
